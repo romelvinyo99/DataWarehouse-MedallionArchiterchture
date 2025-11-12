@@ -227,11 +227,7 @@ RETURN (
 	       prd_id, prd_key, prd_nm, 
 		   prd_cost, prd_line, 
 		   CAST(prd_start_dt AS DATE) AS prd_start_dt, 
-		   CAST(CASE  
-              WHEN prd_end_dt IS NULL OR prd_end_dt < prd_start_dt THEN  
-                  DATEDIFF(DAY, -1, LEAD(prd_start_dt) OVER(PARTITION BY cat_id ORDER BY prd_start_dt ASC))
-              ELSE prd_end_dt  
-           END AS DATE) AS prd_end_dt,
+	       LEAD(prd_start_dt) OVER(PARTITION BY cat_id ORDER BY prd_start_dt ASC) AS prd_end_dt,
 		   cat_id
 		   FROM cte_easy_cleanup
 	)
@@ -649,4 +645,5 @@ SELECT * FROM bronze.erp_px_cat_g1v2 ;
 GO 
 -- Confirming data insertion 
 SELECT * FROM silver.erp_px_cat_g1v2 ; 
+
 GO 
